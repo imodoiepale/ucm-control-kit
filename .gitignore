@@ -1,0 +1,10 @@
+node_modules/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
+# real PBX data never goes in this repo
+audit/
+*.audit.json
+sites.json

@@ -1,0 +1,7 @@
+[
+  { "id": "harbour-road", "name": "Harbour Road", "aliases": ["Harbour"], "region": "Coast", "extension": "1001", "subnet": "10.10.1.0/24" },
+  { "id": "hill-street", "name": "Hill Street", "region": "Central", "extension": "1002", "subnet": "10.10.2.0/24" },
+  { "id": "lake-view", "name": "Lake View Mall", "aliases": ["Lake View"], "region": "West", "extension": "1003", "subnet": "10.10.3.0/24" },
+  { "id": "kisumu-central", "name": "Kisumu Central", "aliases": ["KSM Central"], "region": "West", "extension": "1005", "subnet": "10.10.5.0/24" },
+  { "id": "head-office", "name": "Head Office", "region": "Central", "subnet": "10.0.0.0/24" }
+]

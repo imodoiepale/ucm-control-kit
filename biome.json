@@ -1,0 +1,15 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
+  "files": { "includes": ["**", "!**/node_modules", "!**/*.svg"] },
+  "formatter": { "enabled": false },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": { "noParameterAssign": "off", "useTemplate": "off" },
+      "complexity": { "useLiteralKeys": "off" },
+      "suspicious": { "noAssignInExpressions": "off" }
+    }
+  },
+  "javascript": { "formatter": { "quoteStyle": "single" } }
+}

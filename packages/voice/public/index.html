@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UCM Voice Console</title>
+<style>
+  :root { --bg:#0b1020; --panel:#121a33; --line:#23305a; --text:#e8ecf8; --muted:#8b97bd; --accent:#4f8cff; --ok:#2ecc8f; --warn:#f5a524; --bad:#ff5d6c; }
+  @media (prefers-color-scheme: light) { :root { --bg:#f5f7fc; --panel:#fff; --line:#dde3f0; --text:#0e1630; --muted:#5b6788; } }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.5 system-ui, sans-serif; background:var(--bg); color:var(--text); }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  .mic { display:flex; align-items:center; gap:16px; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:16px; }
+  button.talk { width:72px; height:72px; border-radius:50%; border:0; background:var(--accent); color:#fff; font-size:28px; cursor:pointer; flex:none; transition: transform .1s, box-shadow .2s; }
+  button.talk.live { background:var(--bad); box-shadow:0 0 0 8px color-mix(in srgb, var(--bad) 25%, transparent); }
+  button.talk:active { transform: scale(.96); }
+  .hint { color:var(--muted); font-size:13px; }
+  form { display:flex; gap:8px; margin-top:12px; }
+  input { flex:1; min-width:0; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); font:inherit; }
+  form button { padding:10px 14px; border-radius:10px; border:0; background:var(--accent); color:#fff; font:inherit; cursor:pointer; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+  .chip { padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:transparent; color:var(--text); cursor:pointer; font-size:13px; }
+  .log { display:flex; flex-direction:column; gap:10px; }
+  .msg { padding:10px 14px; border-radius:12px; max-width:90%; white-space:pre-wrap; overflow-wrap:anywhere; }
+  .you { align-self:flex-end; background:var(--accent); color:#fff; }
+  .bot { align-self:flex-start; background:var(--panel); border:1px solid var(--line); }
+  .bot.confirm { border-color:var(--warn); }
+  details { margin-top:6px; font-size:12px; color:var(--muted); }
+  pre { margin:6px 0 0; max-height:240px; overflow:auto; }
+</style>
+</head>
+<body>
+<main>
+  <h1>UCM Voice Console</h1>
+  <p class="sub">Hold the button and speak, or type. Anything that rings phones asks you to confirm first.</p>
+  <div class="mic">
+    <button type="button" class="talk" id="talk" aria-label="Hold to talk">🎙</button>
+    <div>
+      <div id="state">Ready</div>
+      <div class="hint" id="support"></div>
+    </div>
+  </div>
+  <form id="form"><input id="text" placeholder="e.g. which phones are offline" autocomplete="off" aria-label="Command"><button type="submit">Send</button></form>
+  <div class="chips" id="chips"></div>
+  <div class="log" id="log" aria-live="polite"></div>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+let pending = null;
+
+function add(text, who, data, cls = '') {
+  const el = document.createElement('div');
+  el.className = `msg ${who} ${cls}`;
+  el.textContent = text;
+  if (data) {
+    const d = document.createElement('details');
+    d.innerHTML = '<summary>details</summary>';
+    const pre = document.createElement('pre');
+    pre.textContent = JSON.stringify(data, null, 2);
+    d.append(pre);
+    el.append(d);
+  }
+  $('log').prepend(el);
+}
+
+function say(text) {
+  if (!text || !('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+}
+
+async function post(path, body) {
+  const r = await fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  return r.json();
+}
+
+async function handle(text) {
+  if (!text.trim()) return;
+  add(text, 'you');
+  $('state').textContent = 'Working…';
+  try {
+    let res = await post('/api/say', { text });
+    if (res.intent?.kind === 'confirm' && pending) {
+      res = await post('/api/run', { tool: pending.tool, args: { ...pending.args, confirm: true } });
+      pending = null;
+    } else if (res.intent?.kind === 'cancel' || res.intent?.kind === 'confirm') {
+      res = { reply: pending ? 'Cancelled.' : 'There is nothing waiting for confirmation.' };
+      pending = null;
+    } else if (res.needsConfirmation) {
+      pending = res.intent;
+    } else {
+      pending = null;
+    }
+    add(res.reply ?? 'Done.', 'bot', res.result ?? (res.error ? { error: res.error } : null), res.needsConfirmation ? 'confirm' : '');
+    say(res.reply);
+  } catch (e) {
+    add(`Request failed: ${e.message}`, 'bot');
+  }
+  $('state').textContent = pending ? 'Waiting for yes / no' : 'Ready';
+}
+
+$('form').addEventListener('submit', (e) => { e.preventDefault(); handle($('text').value); $('text').value = ''; });
+
+fetch('/api/tools').then((r) => r.json()).then(({ tools }) => {
+  for (const t of tools) for (const ex of t.examples ?? []) {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = ex;
+    b.onclick = () => handle(ex);
+    $('chips').append(b);
+  }
+});
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (!SR) {
+  $('support').textContent = 'This browser has no speech recognition. Use Chrome or Edge, or type.';
+  $('talk').disabled = true;
+} else {
+  $('support').textContent = 'Hold to talk (or press and hold Space).';
+  const rec = new SR();
+  rec.lang = navigator.language || 'en-US';
+  rec.interimResults = true;
+  let final = '';
+  rec.onresult = (e) => {
+    final = [...e.results].map((r) => r[0].transcript).join(' ');
+    $('state').textContent = `“${final}”`;
+  };
+  rec.onend = () => { $('talk').classList.remove('live'); if (final) handle(final); final = ''; };
+  rec.onerror = (e) => { $('state').textContent = `Mic error: ${e.error}`; };
+  const start = () => { if ($('talk').classList.contains('live')) return; speechSynthesis?.cancel(); $('talk').classList.add('live'); $('state').textContent = 'Listening…'; try { rec.start(); } catch {} };
+  const stop = () => { try { rec.stop(); } catch {} };
+  $('talk').addEventListener('pointerdown', start);
+  $('talk').addEventListener('pointerup', stop);
+  $('talk').addEventListener('pointerleave', stop);
+  addEventListener('keydown', (e) => { if (e.code === 'Space' && document.activeElement !== $('text')) { e.preventDefault(); start(); } });
+  addEventListener('keyup', (e) => { if (e.code === 'Space' && document.activeElement !== $('text')) stop(); });
+}
+</script>
+</body>
+</html>

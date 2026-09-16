@@ -1,0 +1,50 @@
+{
+  "name": "@ucm-control-kit/voice",
+  "version": "0.1.0",
+  "description": "Voice control for Grandstream UCM: push-to-talk console plus tool schemas for ElevenLabs, OpenAI Realtime and Gemini Live",
+  "type": "module",
+  "bin": {
+    "ucm-voice": "src/server.js"
+  },
+  "exports": {
+    ".": "./src/intents.js",
+    "./server": "./src/server.js"
+  },
+  "files": [
+    "src",
+    "public"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@ucm-control-kit/core": "workspace:*"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "homepage": "https://github.com/imodoiepale/ucm-control-kit#readme",
+  "bugs": "https://github.com/imodoiepale/ucm-control-kit/issues",
+  "author": "imodoiepale",
+  "keywords": [
+    "grandstream",
+    "ucm",
+    "pbx",
+    "voip",
+    "sip",
+    "mcp",
+    "agent-skill",
+    "voice",
+    "iot"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imodoiepale/ucm-control-kit.git",
+    "directory": "packages/voice"
+  }
+}

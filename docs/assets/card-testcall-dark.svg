@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="180" viewBox="0 0 400 180" role="img" aria-label="Test call: Ring one branch, connect it to another, and confirm the call bridges.">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5B8CFF"/><stop offset="1" stop-color="#22D3A6"/></linearGradient></defs>
+  <rect x="1" y="1" width="398" height="178" rx="18" fill="#121A33" stroke="#26345F"/>
+  <rect x="24" y="24" width="48" height="48" rx="12" fill="url(#g)"/>
+  <path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2" transform="translate(36,36)" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="88" y="56" font-family="Inter, Segoe UI, system-ui, -apple-system, sans-serif" font-size="22" font-weight="700" fill="#EEF2FF">Test call</text>
+  <text x="24" y="106" font-family="Inter, Segoe UI, system-ui, -apple-system, sans-serif" font-size="15" fill="#93A0C8">Ring one branch, connect it to another, and</text><text x="24" y="128" font-family="Inter, Segoe UI, system-ui, -apple-system, sans-serif" font-size="15" fill="#93A0C8">confirm the call bridges.</text>
+</svg>

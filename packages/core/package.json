@@ -1,0 +1,44 @@
+{
+  "name": "@ucm-control-kit/core",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./tools": "./src/tools.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  },
+  "license": "MIT",
+  "description": "Grandstream UCM API client with audit, monitoring, reconcile, diagnosis, call reports and test calls",
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "src"
+  ],
+  "homepage": "https://github.com/imodoiepale/ucm-control-kit#readme",
+  "bugs": "https://github.com/imodoiepale/ucm-control-kit/issues",
+  "author": "imodoiepale",
+  "keywords": [
+    "grandstream",
+    "ucm",
+    "pbx",
+    "voip",
+    "sip",
+    "mcp",
+    "agent-skill",
+    "voice",
+    "iot"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imodoiepale/ucm-control-kit.git",
+    "directory": "packages/core"
+  }
+}

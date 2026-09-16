@@ -1,0 +1,23 @@
+name: Bug report
+description: Something does not work
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Command or tool call, what you expected, and what you got.
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: UCM model and firmware
+      placeholder: UCM6304 1.0.33.30
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output (remove names, IPs and passwords)
+      render: shell
