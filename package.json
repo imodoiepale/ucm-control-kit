@@ -4,7 +4,7 @@
   "description": "Open-source toolkit to audit, monitor, repair and voice-control Grandstream UCM phone systems",
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@11.23.0",
+  "packageManager": "pnpm@10.18.3",
   "engines": {
     "node": ">=20"
   },
