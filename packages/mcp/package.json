@@ -16,7 +16,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.0",
     "@ucm-control-kit/core": "workspace:*",
-    "zod": "^3.25.0"
+    "zod": "^4.6.4"
   },
   "scripts": {
     "test": "node --test test/*.test.js"
