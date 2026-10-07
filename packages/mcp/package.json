@@ -14,7 +14,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.17.0",
+    "@modelcontextprotocol/sdk": "^1.32.0",
     "@ucm-control-kit/core": "workspace:*",
     "zod": "^3.25.0"
   },
